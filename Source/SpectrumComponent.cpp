@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    Test_Cmp.cpp
+    SpectrumComponent.cpp
     Created: 11 Nov 2018 9:40:21am
     Author:  lenovo
 
@@ -9,12 +9,12 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "Test_Cmp.h"
+#include "SpectrumComponent.h"
 
-const int Test_Cmp::frequenciesForLines[] = { 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 20000 };
-const int Test_Cmp::numberOfLines = 28;
+const int SpectrumComponent::frequenciesForLines[] = { 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 20000 };
+const int SpectrumComponent::numberOfLines = 28;
 //==============================================================================
-Test_Cmp::Test_Cmp()
+SpectrumComponent::SpectrumComponent()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -22,11 +22,11 @@ Test_Cmp::Test_Cmp()
 	setSize(600, 400);  //?!!!!!!!!
 }
 
-Test_Cmp::~Test_Cmp()
+SpectrumComponent::~SpectrumComponent()
 {
 }
 
-void Test_Cmp::paint (Graphics& g)
+void SpectrumComponent::paint (Graphics& g)
 {
     /* This demo code just fills the component's background and
        draws some placeholder text to get you started.
@@ -51,18 +51,18 @@ void Test_Cmp::paint (Graphics& g)
 	g.drawText("10000", 865, 245, 50, 50, Justification::centred);
 	g.drawText("200000", 950, 245, 50, 50, Justification::centred);
 
-	g.setColour(Colours::darkcyan);
+	g.setColour(Colours::deeppink);
 	paintSpectrum(g);
 }
 
-void Test_Cmp::resized()
+void SpectrumComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
 
 }
 
-void Test_Cmp::paintSpectrum(Graphics & g)
+void SpectrumComponent::paintSpectrum(Graphics & g)
 {
 	//numBins = numBins / 2; // tmp potem zmienic zeby przyjmowalo od razu fftsize / 2
 	//	const float* data = ;// processor.fftData;
@@ -121,14 +121,14 @@ void Test_Cmp::paintSpectrum(Graphics & g)
 
 }
 
-void Test_Cmp::prepareToPaintSpectrum(int numBins, float * data)
+void SpectrumComponent::prepareToPaintSpectrum(int numBins, float * data)
 {
 	number_of_bins = numBins;
 	spectrum_data = data;
 	//repaint();
 }
 
-float Test_Cmp::transformToLog(float between0and1)
+float SpectrumComponent::transformToLog(float between0and1)
 {
 	const float minimum = 1.0f;
 	const float maximum = 1000.0f;

@@ -43,7 +43,7 @@ void Spectrum_analyser_testAudioProcessorEditor::paint (Graphics& g)
 {
 	g.fillAll(Colours::black);
 	g.setOpacity(1.0f);
-	sc.prepareToPaintSpectrum(processor.fftSize / 2, processor.fftData);
+	sc.prepareToPaintSpectrum(processor.getFFTSize(), processor.getFFTData()); // moze spectrum component bedziesie laczyl ze spectrum processorem? 
 }
 
 void Spectrum_analyser_testAudioProcessorEditor::resized()
@@ -56,11 +56,12 @@ void Spectrum_analyser_testAudioProcessorEditor::timerCallback()
 {
 
 
-	if (processor.nextFFTBlockReady == true)
+	if (processor.isFFTBlockReady() )
 	{
-		processor.doProcessing();
-		processor.nextFFTBlockReady = false;
-		sc.prepareToPaintSpectrum(processor.fftSize / 2, processor.fftData);
+		//processor.doProcessing();
+		//processor.nextFFTBlockReady = false;
+		processor.processFFT();
+		sc.prepareToPaintSpectrum(processor.getFFTSize() , processor.getFFTData());
 		sc.repaint();
 	}
 

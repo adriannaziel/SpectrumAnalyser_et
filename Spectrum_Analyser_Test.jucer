@@ -10,8 +10,11 @@
             file="Source/PluginProcessor.h"/>
       <FILE id="vnQakx" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
-      <FILE id="Ly8EhQ" name="Test_Cmp.cpp" compile="1" resource="0" file="Source/Test_Cmp.cpp"/>
-      <FILE id="eXowDP" name="Test_Cmp.h" compile="0" resource="0" file="Source/Test_Cmp.h"/>
+      <FILE id="Ly8EhQ" name="SpectrumComponent.cpp" compile="1" resource="0"
+            file="Source/SpectrumComponent.cpp"/>
+      <FILE id="ORaSVE" name="FFTProcessor.h" compile="0" resource="0" file="Source/FFTProcessor.h"/>
+      <FILE id="eXowDP" name="SpectrumComponent.h" compile="0" resource="0"
+            file="Source/SpectrumComponent.h"/>
       <FILE id="NBfP9q" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>

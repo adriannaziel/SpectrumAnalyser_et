@@ -14,20 +14,16 @@
 //==============================================================================
 Spectrum_analyser_testAudioProcessor::Spectrum_analyser_testAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", AudioChannelSet::stereo(), true)
-                     #endif
-                       ),fftOrder2(12), forwardFFT(fftOrder),
-	window(fftSize, dsp::WindowingFunction<float>::hamming)
+	: AudioProcessor(BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+		.withInput("Input", AudioChannelSet::stereo(), true)
+#endif
+		.withOutput("Output", AudioChannelSet::stereo(), true)
+#endif
+	) 
 #endif
 {
-	fftSize2 = 1 << fftOrder2;
-	window_type = HAMMING;
-
 }
 
 Spectrum_analyser_testAudioProcessor::~Spectrum_analyser_testAudioProcessor()
@@ -151,29 +147,9 @@ void Spectrum_analyser_testAudioProcessor::processBlock (AudioBuffer<float>& buf
 		auto* channelData = buffer.getReadPointer(0);
 
 		for (auto i = 0; i < buffer.getNumSamples(); ++i)
-			pushNextSampleIntoFifo(channelData[i]);
+			spectrum_processor.pushNextSampleIntoFifo(channelData[i]);
 	}
 }
-
-
-void Spectrum_analyser_testAudioProcessor::pushNextSampleIntoFifo(float sample) noexcept
-{
-
-	if (fifoIndex == fftSize)
-	{
-		if (!nextFFTBlockReady)
-		{
-			zeromem(fftData, sizeof(fftData));
-			memcpy(fftData, fifo, sizeof(fifo));
-			nextFFTBlockReady = true;
-		}
-
-		fifoIndex = 0;
-	}
-
-	fifo[fifoIndex++] = sample;
-}
-
 
 
 //==============================================================================
@@ -201,61 +177,57 @@ void Spectrum_analyser_testAudioProcessor::setStateInformation (const void* data
     // whose contents will have been created by the getStateInformation() call.
 }
 
-void Spectrum_analyser_testAudioProcessor::doProcessing()
+bool Spectrum_analyser_testAudioProcessor::isFFTBlockReady()
 {
-	
-	window.multiplyWithWindowingTable(fftData, fftSize);
-	forwardFFT.performFrequencyOnlyForwardTransform(fftData);
+	return spectrum_processor.nextFFTBlockReady;
 }
+
+void Spectrum_analyser_testAudioProcessor::processFFT()
+{
+	spectrum_processor.doProcessing();
+	spectrum_processor.nextFFTBlockReady = false;
+}
+
+
 
 
 
 void Spectrum_analyser_testAudioProcessor::changeWindow()
 {
-	if (window_type == BH) {
-		window.fillWindowingTables(fftSize, dsp::WindowingFunction<float>::hann);
-		window_type = HANN;
-	}
-	else if (window_type == HANN) {
-			window.fillWindowingTables(fftSize, dsp::WindowingFunction<float>::hamming);
-		window_type = HAMMING;
-	}
-
-	else  if (window_type == HAMMING) {
-		  window.fillWindowingTables(fftSize, dsp::WindowingFunction<float>::rectangular);
-		window_type = RECTANGULAR;
-	}
-	else  if (window_type == RECTANGULAR) {
-		window.fillWindowingTables(fftSize, dsp::WindowingFunction<float>::blackman);
-		window_type = BLACKMANN;
-	}
-	else  if (window_type == BLACKMANN) {
-		window.fillWindowingTables(fftSize, dsp::WindowingFunction<float>::blackmanHarris);
-		window_type = BH;
-	}
-
+	spectrum_processor.changeWindow();
 }
 
 String Spectrum_analyser_testAudioProcessor::getWindowName()
 {
-	if (window_type == BH) {
+	WINDOW_TYPE wt = spectrum_processor.window_type;
+	if (wt == BH) {
 		return "blackmann-harris";
 	}
-	else if (window_type == HANN) {
+	else if (wt == HANN) {
 		return "hann";
 
 	}
-	else if (window_type == HAMMING) {
+	else if (wt == HAMMING) {
 		return "hamming";
 	}
-	else  if (window_type == BLACKMANN) {
+	else  if (wt == BLACKMANN) {
 		return "blackmann";
 	}
-	else  if (window_type == RECTANGULAR) {
+	else  if (wt == RECTANGULAR) {
 		return "rectangular";
 
 	}
 
+}
+
+float * Spectrum_analyser_testAudioProcessor::getFFTData()
+{
+	return spectrum_processor.fftData;
+}
+
+int Spectrum_analyser_testAudioProcessor::getFFTSize()
+{
+	return spectrum_processor.fftSize/2 ;
 }
 
 //==============================================================================

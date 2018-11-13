@@ -12,7 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-#include "Test_Cmp.h"
+#include "SpectrumComponent.h"
 
 //==============================================================================
 /**
@@ -33,7 +33,7 @@ public:
 
 private:
 	TextButton buttonWindow;
-	Test_Cmp sc;
+	SpectrumComponent sc;
     Spectrum_analyser_testAudioProcessor& processor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spectrum_analyser_testAudioProcessorEditor)
